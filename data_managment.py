@@ -17,52 +17,56 @@ Delete a Transaction: Remove a specific transaction by its index.
 import pandas as pd
 from datetime import datetime
 
+"""
+                                             VIEWING TRANSACTIONS FUNCTION
+"""
+
 df = pd.read_csv("transactions.csv")
-df["Date"] = pd.to_datetime(df["Date"])
+df["Date"] = pd.to_datetime(df["Date"]) # Changing datatype to datetime
 
 print(df.head())
 
 def view_transaction(transaction):
 
-    start_date = transaction["Date"].min()
-    end_date = transaction["Date"].max()
+    start_date = transaction["Date"].min() # Variable with the newest date
+    end_date = transaction["Date"].max() # Variable with the oldest date
 
     print(f"\nAvailable transaction dates: {start_date.date()} to {end_date.date()}")
 
     while True:
         try:
             date_input_init = input("\nType the start date (YYYY-MM-DD): ")
-            valid_init_date = datetime.strptime(date_input_init, "%Y-%m-%d")
+            valid_init_date = datetime.strptime(date_input_init, "%Y-%m-%d") # Converting the user input to datetime
 
             date_input_end = input("Type the end date (YYYY-MM-DD): ")
-            valid_end_date = datetime.strptime(date_input_end, "%Y-%m-%d")
+            valid_end_date = datetime.strptime(date_input_end, "%Y-%m-%d") # Converting the user input to datetime
 
-            if valid_init_date > end_date or valid_end_date < start_date:
+            if valid_init_date > end_date or valid_end_date < start_date:  # Check if dates are invalid
                 print("\nNo transactions in the given date range. Please try again.")
                 continue
 
-            transactions_range_date = transaction[
-                transaction["Date"].between(valid_init_date, valid_end_date)
-            ]
+            transactions_range_date = transaction[transaction["Date"].between(valid_init_date, valid_end_date)] # Filter transactions by date range
 
-            if transactions_range_date.empty:
+            if transactions_range_date.empty: # Check if no transactions found
                 print("\nNo transactions found in the selected date range. Please try again.")
-                continue
+                continue # Skip to next iteration
 
             print("\nTransactions found:")
             print(transactions_range_date)
             return transactions_range_date
 
         except ValueError:
-            print("\nInvalid date format. Please use YYYY-MM-DD.")
+            print("\nInvalid date format. Please use YYYY-MM-DD.") #handling user mistakes
 
-# view_transaction(df)
+view_transaction(df)
 
+"""
+                                             ADDING TRANSACTIONS FUNCTION
+"""
 
 file_path = "transactions.csv"  # Ensure the correct file path
 df = pd.read_csv(file_path)
 df["Date"] = pd.to_datetime(df["Date"])
-
 
 def add_transaction():
     today = pd.to_datetime("today").date()
@@ -73,7 +77,6 @@ def add_transaction():
     new_amount = None
     new_category = None
     new_description = None
-
 
     while new_date is None:  # Ask only if new_date is missing
         try:
@@ -126,7 +129,7 @@ def add_transaction():
                 new_type = None
         except ValueError:
             print("\n Invalid input. Please try again.")
-
+    # New transaction as a DataFrame
     new_tran = pd.DataFrame([{
         "Date": new_date,
         "Category": new_category.capitalize(),
@@ -134,8 +137,6 @@ def add_transaction():
         "Amount": new_amount,
         "Type": new_type.capitalize()
     }])
-
-    # Create new transaction as a DataFrame
 
     # Append to CSV
     new_tran.to_csv(file_path, mode='a', header=False, index=False)
@@ -146,14 +147,24 @@ def add_transaction():
     print(df_updated.tail())
 
     return new_tran  # Return the new transaction for further use
-
-# Run the function
 add_transaction()
 
+
+"""
+                                             EDITING TRANSACTIONS FUNCTION
+"""
 # def edit():
-#
+
+
+
+
+
+
+"""
+                                             ADDING TRANSACTIONS FUNCTION
+"""
 # def delete():
-#
+
 
 
 
