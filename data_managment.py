@@ -61,7 +61,7 @@ def view_transaction(transaction):
 view_transaction(df)
 
 """
-                                             ADDING TRANSACTIONS FUNCTION
+                                             DELETING TRANSACTIONS FUNCTION
 """
 
 file_path = "transactions.csv"  # Ensure the correct file path
