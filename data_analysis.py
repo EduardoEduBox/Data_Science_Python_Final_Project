@@ -24,15 +24,16 @@ def monthly_spending(transactions):
     Function to check the monthly spending
 
     :param transactions: original pandas dataframe
-    :return: total by month
+    :return: total by month as a DataFrame
     """
     if transactions.empty:
         print("No transactions available.")
-        return
+        return pd.DataFrame()  # Return empty DataFrame instead of None
 
     transactions["Date"] = pd.to_datetime(transactions["Date"])  # Ensure Date is datetime type
     total_by_month = transactions.groupby('Date')["Amount"].sum()
-    total_by_month = total_by_month.sort_index(ascending=False)  # Sort by date (descending)
+
+    total_by_month = total_by_month.sort_index(ascending=False).reset_index()  # Reset index
 
     print("\nTotal spent monthly:\n")
     return total_by_month

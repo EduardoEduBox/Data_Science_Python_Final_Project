@@ -6,10 +6,28 @@ Date,Category,Description,Amount,Type
 2024-10-04,Transport,Bus Ticket,2.75,Expense
 2024-10-05,Food,Breakfast,15.0,Expense
 2024-10-06,Income,Salary,2000.0,Income
+2024-10-07,Entertainment,Movie Ticket,12.0,Expense
+2024-10-08,Shopping,Clothing,100.0,Expense
+2024-10-09,Health,Pharmacy,20.0,Expense
 2024-10-10,Income,Freelance Work,500.0,Income
+2024-10-11,Food,Coffee,5.0,Expense
 2024-10-12,Utilities,Water Bill,40.0,Expense
-2024-10-15,Food,Lunch,25.0,Expense
+2024-10-13,Transport,Gasoline,50.0,Expense
+2024-10-14,Food,Lunch,25.0,Expense
+2024-10-15,Entertainment,Concert Ticket,80.0,Expense
+2024-10-16,Income,Bonus,300.0,Income
+2024-10-17,Health,Gym Membership,45.0,Expense
 2024-10-18,Transport,Taxi,25.0,Expense
+2024-10-19,Shopping,Electronics,250.0,Expense
 2024-10-20,Income,Investment Return,200.0,Income
+2024-10-21,Food,Dinner,40.0,Expense
+2024-10-22,Education,Online Course,150.0,Expense
+2024-10-23,Income,Side Hustle,600.0,Income
+2024-10-24,Shopping,Groceries,75.0,Expense
 2024-10-25,Food,Groceries,80.0,Expense
+2024-10-26,Entertainment,Video Game,60.0,Expense
+2024-10-27,Health,Doctor Visit,100.0,Expense
 2024-10-28,Rent,Monthly Rent,1200.0,Expense
+2024-10-29,Utilities,Internet Bill,70.0,Expense
+2024-10-30,Food,Lunch,22.0,Expense
+2024-10-31,Transport,Uber Ride,18.0,Expense
