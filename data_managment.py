@@ -161,7 +161,7 @@ add_transaction()
 
 
 """
-                                             ADDING TRANSACTIONS FUNCTION
+                                             DELETING TRANSACTIONS FUNCTION
 """
 # def delete():
 
