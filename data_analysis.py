@@ -19,34 +19,47 @@ def spending_by_category(transactions):
     return total_by_category
 
 
-def monthly_spending(transactions):
+def monthly_spending(transactions: pd.DataFrame) -> pd.DataFrame:
     """
-    Function to check the monthly spending
-
-    :param transactions: original pandas dataframe
-    :return: total by month as a DataFrame
+    Groups transactions by Year-Month and returns a DataFrame
+    with columns ['Date', 'Amount'] where Amount is the total monthly spending.
     """
     if transactions.empty:
         print("No transactions available.")
-        return pd.DataFrame()  # Return empty DataFrame instead of None
+        return pd.DataFrame()
 
-    transactions["Date"] = pd.to_datetime(transactions["Date"])  # Ensure Date is datetime type
-    total_by_month = transactions.groupby('Date')["Amount"].sum()
+    # Convert 'Date' to a proper datetime if it's not already
+    transactions['Date'] = pd.to_datetime(transactions['Date'], errors='coerce')
 
-    total_by_month = total_by_month.sort_index(ascending=False).reset_index()  # Reset index
+    # Create a 'YearMonth' column, e.g., 2024-10, 2024-11, etc.
+    transactions['YearMonth'] = transactions['Date'].dt.to_period('M')
 
-    print("\nTotal spent monthly:\n")
-    return total_by_month
+    # Here, we sum up the 'Amount' for each month.
+    # (If you want the average, replace .sum() with .mean())
+    monthly_totals = transactions.groupby('YearMonth')['Amount'].sum().reset_index()
+
+    # Convert the YearMonth period to a real timestamp for plotting
+    monthly_totals['Date'] = monthly_totals['YearMonth'].dt.to_timestamp()
+
+    # Clean up columns
+    monthly_totals.drop(columns='YearMonth', inplace=True)
+    monthly_totals.rename(columns={'Amount': 'Amount'}, inplace=True)
+
+    # Sort by date ascending
+    monthly_totals.sort_values(by='Date', inplace=True)
+
+    print("\nMonthly spending (aggregated):\n", monthly_totals)
+    return monthly_totals
 
 
 def top_5_spending_categories(transactions_by_category):
     """
-    Function to grab the top 5 categories that the user spends the most
-
-    :param transactions_by_category: function that grabs the spending by category
+    Prints the top 5 categories from a Series of total spending by category.
     """
-    if not transactions_by_category:
-        print("Getter function not provided")
+    # If the user canceled or there's no data
+    if transactions_by_category is None or transactions_by_category.empty:
+        print("No spending data provided.")
         return
 
+    print("\nTop 5 Spending Categories:\n")
     print(transactions_by_category.head())
