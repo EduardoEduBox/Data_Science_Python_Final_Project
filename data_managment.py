@@ -257,26 +257,72 @@ def edit_transactions():
     df.at[index_transaction, "Type"] = new_type
 
     # Step 4: Save changes
-    df.to_csv("transactions.csv", index=False)
+    df.to_csv("transactions.csv", index = False)
 
     print("\nTransaction updated successfully!")
     print("\nUpdated Transaction Details:")
     print(df.iloc[index_transaction])  # Show updated transaction
 
-
 # Call the function to test
-edit_transactions()
-
-
-
+# edit_transactions()
 
 
 
 """
                                              DELETING TRANSACTIONS FUNCTION
 """
-# def delete():
 
 
+def delete_transaction():
+    while True:
+        try:
+            print("\nCurrent Transaction List:\n", df)  # Show transactions before deletion
 
+            index_transaction_del = input(
+                "\nChoose the INDEX of the transaction that you want to DELETE (or type 'C' to cancel): ").strip().capitalize()
+
+            if index_transaction_del == "C":  # Allow user to cancel
+                print("\nDeletion canceled.")
+                break  # Exit function
+
+            if not index_transaction_del.isdigit():  # Ensure it's a valid number
+                print("\nThe index must be a number. Please try again.")
+                continue
+
+            index_transaction_del = int(index_transaction_del)
+
+            if index_transaction_del < 0 or index_transaction_del >= len(df):  # Check if index is valid
+                print("\nInvalid index. Please choose a valid transaction.")
+                continue
+
+            print("\nCurrent Transaction Details:")
+            print(df.iloc[index_transaction_del])  # Show selected transaction
+
+            confirm_del = input("\nAre you sure you want to delete this transaction? (Y to confirm, N to cancel): ").strip().capitalize()
+            print("\nWARNING! This Processes isn't reversible.")
+            if confirm_del == "Y":
+                df.drop(index_transaction_del, inplace = True)  # Delete the row
+                df.reset_index(drop = True, inplace = True)  # Reset index after deletion
+                print("\nTransaction deleted successfully!")
+
+                print("\nUpdated Transaction List:\n", df)  # Show updated transactions
+
+                # Ask user if they want to delete another transaction
+                new_del = input("\nWould you like to delete another transaction? (Y/N): ").strip().capitalize()
+                if new_del == "N":
+                    print("\nAll done. See you next time!")
+                    break  # Exit loop
+
+            elif confirm_del == "N":
+                print("\nOperation canceled.")
+                break
+
+            else:
+                print("\nInvalid input. Please enter Y or N.")
+
+        except ValueError:
+            print("\nInvalid input. Please try again.")
+
+# Call function
+delete_transaction()
 
