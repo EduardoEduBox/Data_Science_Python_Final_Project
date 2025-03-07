@@ -4,41 +4,35 @@ import matplotlib.pyplot as plt
 def monthly_spending_trend(formated: pd.DataFrame):
     """
     Function to plot the monthly spending trend.
-
-    :param formated: A pandas DataFrame with 'Date' and 'Amount' columns.
+    Expects a DataFrame with columns 'Date' and 'Amount' (monthly aggregates).
     """
     if formated.empty:
         print("No data available to plot.")
         return
 
-    plt.figure(figsize=(16, 8))  # Set figure size
+    plt.figure(figsize=(16, 8))
 
-    # Plot with a smooth curve, bigger markers, and vibrant color
-    plt.plot(formated['Date'], formated['Amount'],
-             marker='o', markersize=8, linestyle='-', linewidth=2.5,
-             color='#2E8B57', label='Spending', alpha=0.85)
+    plt.plot(
+        formated['Date'], formated['Amount'],
+        marker='o', markersize=8, linestyle='-', linewidth=2.5,
+        color='#2E8B57', label='Monthly Spending', alpha=0.85
+    )
 
-    # Titles and labels with better styling
     plt.title('Monthly Spending Trend', fontsize=16, fontweight='bold', pad=15)
     plt.xlabel('Date', fontsize=14, fontweight='bold', labelpad=10)
     plt.ylabel('Amount Spent ($)', fontsize=14, fontweight='bold', labelpad=10)
 
-    # Rotate x-axis labels for better readability
     plt.xticks(rotation=30, ha='right', fontsize=12)
     plt.yticks(fontsize=12)
-
-    # Improve grid visibility
     plt.grid(axis='y', linestyle='--', alpha=0.5)
-
-    # Add a shadow effect for depth
-    plt.gca().set_facecolor('#f7f7f7')  # Light background for better contrast
+    plt.gca().set_facecolor('#f7f7f7')
     plt.legend(fontsize=12, loc='upper right', frameon=False)
 
     plt.tight_layout()
     plt.show()
 
 
-def spending_by_category(database: pd.DataFrame):
+def spending_by_categories(database: pd.DataFrame):
     """
     Function to plot as a bar chart the spending by category, descending order
 

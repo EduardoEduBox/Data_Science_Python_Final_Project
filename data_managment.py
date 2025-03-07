@@ -1,282 +1,190 @@
-"""Data Management
-
-Final Project: Personal Finance Tracker App
-
-View Transactions by Date Range: Filter and display transactions within a
-specified date range.
-
-Add a Transaction: Add a new transaction with details like date, category,
-description, and amount.
-
-Edit a Transaction: Modify details of an existing transaction (date,
-category, description, amount).
-
-Delete a Transaction: Remove a specific transaction by its index.
-"""
-
 import pandas as pd
 from datetime import datetime
+from utils import validate_index, get_valid_input
 
-"""
-                                             VIEWING TRANSACTIONS FUNCTION
-"""
+# Set pandas options to display more rows and columns
+pd.set_option('display.max_rows', None)  # Display all rows
+pd.set_option('display.max_columns', None)  # Display all columns
+pd.set_option('display.width', None)  # Allow unlimited width, to avoid wrapping lines
+pd.set_option('display.max_colwidth', None)  # Prevent truncation of column content
 
-df = pd.read_csv("transactions.csv")
-df["Date"] = pd.to_datetime(df["Date"]) # Changing datatype to datetime
+def add_transaction(transactions: pd.DataFrame):
+    today = datetime.today().date()
 
-# print(df.head())
+    # Validate date input
+    new_date = None
+    while new_date is None:
+        date_input = input("\nType the DATE of the new transaction (YYYY-MM-DD): ")
+        try:
+            candidate = datetime.strptime(date_input, "%Y-%m-%d").date()
+            if candidate > today:
+                print("Invalid date. Transactions cannot be in the future.")
+            else:
+                new_date = candidate
+        except ValueError:
+            print("Invalid date format. Please use YYYY-MM-DD.")
 
-def view_transaction(transaction):
+    # Validate category input
+    new_category = None
+    while new_category is None:
+        candidate = input("\nType the CATEGORY of the new transaction: ").strip()
+        if candidate == "":
+            print("Category cannot be empty.")
+        elif not candidate.replace(" ", "").isalpha():
+            print("Invalid input. Please use only alphabetic characters for the category.")
+        else:
+            new_category = candidate.capitalize()
 
-    start_date = transaction["Date"].min() # Variable with the newest date
-    end_date = transaction["Date"].max() # Variable with the oldest date
+    # Validate description input
+    new_description = None
+    while new_description is None:
+        candidate = input("\nType the DESCRIPTION of the new transaction: ").strip()
+        if candidate == "":
+            print("Description cannot be empty.")
+        elif candidate.isnumeric():
+            print("Invalid input. Description cannot be purely numeric.")
+        else:
+            new_description = candidate.capitalize()
 
-    print(f"\nAvailable transaction dates: {start_date.date()} to {end_date.date()}")
+    # Validate amount input
+    new_amount = None
+    while new_amount is None:
+        candidate = input("\nType the AMOUNT of the new transaction: ")
+        try:
+            value = float(candidate)
+            if value <= 0:
+                print("Invalid value. Amount must be greater than zero.")
+            else:
+                new_amount = value
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
+
+    # Validate type input
+    new_type = None
+    while new_type is None:
+        candidate = input("\nType the TYPE of the new transaction (Expense or Income): ").strip().capitalize()
+        if candidate not in ["Expense", "Income"]:
+            print("Invalid type. Please enter either 'Expense' or 'Income'.")
+        else:
+            new_type = candidate
+
+    # Create a new row as a dictionary and append it to the DataFrame
+    new_row = {
+        "Date": new_date,
+        "Category": new_category,
+        "Description": new_description,
+        "Amount": new_amount,
+        "Type": new_type
+    }
+    transactions.loc[len(transactions)] = new_row
+
+    transactions.sort_values(by='Date', inplace=True)
+    transactions.reset_index(drop=True, inplace=True)
+
+    print("\nNew transaction added successfully!")
+    print("\nNew Transaction Details:")
+    print(new_row)
+
+    return transactions
+
+def view_transaction(transaction: pd.DataFrame):
+    start_date = transaction["Date"].min()  # This will remain as datetime
+    end_date = transaction["Date"].max()    # This will remain as datetime
+
+    print(f"\nAvailable transaction dates: {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}")
 
     while True:
         try:
             date_input_init = input("\nType the start date (YYYY-MM-DD): ")
-            valid_init_date = datetime.strptime(date_input_init, "%Y-%m-%d") # Converting the user input to datetime
+            valid_init_date = datetime.strptime(date_input_init, "%Y-%m-%d").date()
 
             date_input_end = input("Type the end date (YYYY-MM-DD): ")
-            valid_end_date = datetime.strptime(date_input_end, "%Y-%m-%d") # Converting the user input to datetime
+            valid_end_date = datetime.strptime(date_input_end, "%Y-%m-%d").date()
 
-            if valid_init_date > end_date or valid_end_date < start_date:  # Check if dates are invalid
+            if valid_init_date > end_date or valid_end_date < start_date:  # Compare datetime objects
                 print("\nNo transactions in the given date range. Please try again.")
                 continue
 
-            transactions_range_date = transaction[transaction["Date"].between(valid_init_date, valid_end_date)] # Filter transactions by date range
+            # Filter transactions by the user-provided date range
+            transactions_range_date = transaction[transaction["Date"].between(valid_init_date, valid_end_date)]  # Use datetime objects
 
-            if transactions_range_date.empty: # Check if no transactions found
+            if transactions_range_date.empty:  # Check if no transactions found
                 print("\nNo transactions found in the selected date range. Please try again.")
-                continue # Skip to next iteration
+                continue  # Skip to next iteration
 
             print("\nTransactions found:")
             print(transactions_range_date)
             return transactions_range_date
 
         except ValueError:
-            print("\nInvalid date format. Please use YYYY-MM-DD.") #handling user mistakes
+            print("\nInvalid date format. Please use YYYY-MM-DD.")  # Handling user mistakes
 
-# view_transaction(df)
+def edit_transactions(transactions: pd.DataFrame):
+    today = datetime.today().date()  # Current date
 
-"""
-                                             ADDING TRANSACTIONS FUNCTION
-"""
+    print(transactions)  # Display transactions
 
-file_path = "transactions.csv"  # Ensure the correct file path
-df = pd.read_csv(file_path)
-df["Date"] = pd.to_datetime(df["Date"])
-
-def add_transaction():
-    today = pd.to_datetime("today").date()
-
-    # Store values separately
-    new_type = None
-    new_date = None
-    new_amount = None
-    new_category = None
-    new_description = None
-
-    while new_date is None:  # Ask only if new_date is missing
-        try:
-            date_input = input("\nType the DATE of the new transaction (YYYY-MM-DD): ")
-            new_date = datetime.strptime(date_input, "%Y-%m-%d").date()
-            if new_date > today:
-                print("\n Invalid date. Transactions cannot be in the future.")
-                new_date = None  # Reset value
-        except ValueError:
-            print("\n Invalid date format. Please use YYYY-MM-DD.")
-
-    while new_category is None:  # Ask only if new_category is missing
-        try:
-            new_category = (input("\nType the CATEGORY of the new transaction: ")).strip()
-            if not new_category:
-                print("\n Category cannot be empty.")
-                new_category = None
-            elif not new_category.isalpha():
-                print("\n Invalid input. Please try again.")
-                new_category = None
-        except ValueError:
-            print("\n Invalid input. Please try again.")
-
-    while not new_description:  # Ask only if new_description is missing
-        try:
-            new_description = (input("\nType the DESCRIPTION of the new transaction: ")).strip()
-            if not new_description:
-                print("\n Description cannot be empty.")
-                new_description = None
-            elif new_description.isnumeric():
-                print("\n Invalid input. Please try again.")
-                new_description = None
-        except ValueError:
-            print("\n Invalid input. Please try again.")
-
-    while new_amount is None:  # Ask only if new_amount is missing
-        try:
-            new_amount = float(input("\nType the AMOUNT of the new transaction: "))
-            if new_amount <= 0:
-                print("\n Invalid value. Amount must be greater than zero.")
-                new_amount = None  # Reset value
-        except ValueError:
-            print("\n Invalid input. Please try again.")
-
-    while new_type is None:
-        try:
-            new_type = input("\nType the TYPE of the new transaction (Expense or Income): ").strip().capitalize()
-            if new_type != "Expense" and new_type != "Income":
-                print("\nThe type cannot be empty. Please enter only -> Expense or Income <- ")
-                new_type = None
-        except ValueError:
-            print("\n Invalid input. Please try again.")
-    # New transaction as a DataFrame
-    new_tran = pd.DataFrame([{
-        "Date": new_date,
-        "Category": new_category.capitalize(),
-        "Description": new_description.capitalize(),
-        "Amount": new_amount,
-        "Type": new_type.capitalize()
-    }])
-
-    # Append to CSV
-    new_tran.to_csv(file_path, mode = 'a', header = False, index = False)
-    print("\n New transaction added successfully!")
-
-    # Reload and print last few transactions
-    df_updated = pd.read_csv(file_path)
-    print(df_updated.tail())
-
-    return new_tran  # Return the new transaction for further use
-# add_transaction()
-
-
-"""
-                                             EDITING TRANSACTIONS FUNCTION
-"""
-df = pd.read_csv("transactions.csv")
-df["Date"] = pd.to_datetime(df["Date"])  # Ensure Date column is in datetime format
-
-
-def edit_transactions():
-    today = pd.to_datetime("today").date()
-
-    # Step 1: Display transactions and ask user for the index
-    while True:
-        try:
-            print(df)  # Show transactions for reference
-            index_transaction = input("\nChoose the INDEX of the transaction you would like to edit: ").strip()
-
-            if not index_transaction.isdigit():  # Ensure it's a valid number
-                print("\nThe index must be a number. Please try again.")
-                continue
-
-            index_transaction = int(index_transaction)  # Convert to integer
-
-            if index_transaction < 0 or index_transaction >= len(df):  # Ensure index is within range
-                print("\nInvalid index. Please choose a valid transaction.")
-                continue
-
-            break  # Exit loop if input is valid
-
-        except ValueError:
-            print("\nInvalid index input. Please try again.")
+    # Get transaction index with proper validation
+    index_transaction = get_valid_input(
+        "Enter the INDEX of the transaction to edit",
+        None,
+        lambda i: validate_index(i, transactions)
+    )
 
     print("\nCurrent Transaction Details:")
-    print(df.iloc[index_transaction])  # Show details of the selected transaction
+    # Copy the row and format date
+    transaction_details = transactions.iloc[index_transaction].copy()
+    transaction_details["Date"] = transaction_details["Date"].strftime("%Y-%m-%d")
+    print(transaction_details)
 
-    # Step 2: Get updated values (keep asking until valid input is given)
+    # Get updated values, now using the date object directly for the default value
+    new_date = get_valid_input(
+        "Enter new DATE (YYYY-MM-DD)",
+        transactions.at[index_transaction, "Date"],
+        lambda d: datetime.strptime(d, "%Y-%m-%d").date() if datetime.strptime(d, "%Y-%m-%d").date() <= today else (_ for _ in ()).throw(ValueError("Date cannot be in the future"))
+    )
 
-    # Edit Date
-    while True:
-        new_date = input("\nEnter new DATE (YYYY-MM-DD) or press Enter to keep current: ").strip()
-        if new_date == "":
-            new_date = df.at[index_transaction, "Date"]
-            break
-        try:
-            new_date = datetime.strptime(new_date, "%Y-%m-%d").date()
-            if new_date > today:
-                print("\nInvalid date. Transactions cannot be in the future.")
-                continue
-            break
-        except ValueError:
-            print("\nInvalid date format. Please use YYYY-MM-DD.")
+    new_category = get_valid_input(
+        "Enter new CATEGORY",
+        transactions.at[index_transaction, "Category"],
+        lambda c: c.capitalize()
+    )
 
-    # Edit Category
-    while True:
-        new_category = input("\nEnter new CATEGORY or press Enter to keep current: ").strip()
-        if new_category == "":
-            new_category = df.at[index_transaction, "Category"]
-            break
-        elif new_category.isalpha():
-            break
-        else:
-            print("\nInvalid input. Category should only contain letters.")
+    new_description = get_valid_input(
+        "Enter new DESCRIPTION",
+        transactions.at[index_transaction, "Description"],
+        lambda d: d
+    )
 
-    # Edit Description
-    while True:
-        new_description = input("\nEnter new DESCRIPTION or press Enter to keep current: ").strip()
-        if new_description == "":
-            new_description = df.at[index_transaction, "Description"]
-            break
-        elif not new_description.isnumeric():  # Ensures description is not just numbers
-            break
-        else:
-            print("\nInvalid input. Description cannot be only numbers.")
+    new_amount = get_valid_input(
+        "Enter new AMOUNT",
+        transactions.at[index_transaction, "Amount"],
+        lambda a: float(a) if float(a) > 0 else (_ for _ in ()).throw(ValueError("Amount must be greater than zero"))
+    )
 
-    # Edit Amount
-    while True:
-        new_amount = input("\nEnter new AMOUNT or press Enter to keep current: ").strip()
-        if new_amount == "":
-            new_amount = df.at[index_transaction, "Amount"]
-            break
-        try:
-            new_amount = float(new_amount)
-            if new_amount > 0:
-                break
-            else:
-                print("\nInvalid value. Amount must be greater than zero.")
-        except ValueError:
-            print("\nInvalid input. Please enter a valid number.")
+    new_type = get_valid_input(
+        "Enter new TYPE (Expense/Income)",
+        transactions.at[index_transaction, "Type"],
+        lambda t: t.capitalize() if t.capitalize() in ["Expense", "Income"] else (_ for _ in ()).throw(ValueError("Must be 'Expense' or 'Income'"))
+    )
 
-    # Edit Type
-    while True:
-        new_type = input("\nEnter new TYPE (Expense or Income) or press Enter to keep current: ").strip().capitalize()
-        if new_type == "":
-            new_type = df.at[index_transaction, "Type"]
-            break
-        elif new_type in ["Expense", "Income"]:
-            break
-        else:
-            print("\nInvalid type. Please enter only 'Expense' or 'Income'.")
+    transactions.loc[index_transaction, "Date"] = new_date
+    transactions.loc[index_transaction, "Category"] = new_category
+    transactions.loc[index_transaction, "Description"] = new_description
+    transactions.loc[index_transaction, "Amount"] = new_amount
+    transactions.loc[index_transaction, "Type"] = new_type
 
-    # Step 3: Update DataFrame with new values
-    df.at[index_transaction, "Date"] = new_date
-    df.at[index_transaction, "Category"] = new_category
-    df.at[index_transaction, "Description"] = new_description
-    df.at[index_transaction, "Amount"] = new_amount
-    df.at[index_transaction, "Type"] = new_type
-
-    # Step 4: Save changes
-    df.to_csv("transactions.csv", index = False)
-
-    print("\nTransaction updated successfully!")
+    print("\n✅ Transaction updated successfully!")
     print("\nUpdated Transaction Details:")
-    print(df.iloc[index_transaction])  # Show updated transaction
-
-# Call the function to test
-# edit_transactions()
-
+    updated_transaction = transactions.iloc[index_transaction].copy()
+    updated_transaction["Date"] = updated_transaction["Date"].strftime("%Y-%m-%d")
+    print(updated_transaction)
 
 
-"""
-                                             DELETING TRANSACTIONS FUNCTION
-"""
-
-
-def delete_transaction():
+def delete_transaction(transaction: pd.DataFrame):
     while True:
         try:
-            print("\nCurrent Transaction List:\n", df)  # Show transactions before deletion
+            print("\nCurrent Transaction List:\n", transaction)  # Show transactions before deletion
 
             index_transaction_del = input(
                 "\nChoose the INDEX of the transaction that you want to DELETE (or type 'C' to cancel): ").strip().capitalize()
@@ -291,21 +199,21 @@ def delete_transaction():
 
             index_transaction_del = int(index_transaction_del)
 
-            if index_transaction_del < 0 or index_transaction_del >= len(df):  # Check if index is valid
+            if index_transaction_del < 0 or index_transaction_del >= len(transaction):  # Check if index is valid
                 print("\nInvalid index. Please choose a valid transaction.")
                 continue
 
             print("\nCurrent Transaction Details:")
-            print(df.iloc[index_transaction_del])  # Show selected transaction
+            print(transaction.iloc[index_transaction_del])  # Show selected transaction
 
             confirm_del = input("\nAre you sure you want to delete this transaction? (Y to confirm, N to cancel): ").strip().capitalize()
             print("\nWARNING! This Processes isn't reversible.")
             if confirm_del == "Y":
-                df.drop(index_transaction_del, inplace = True)  # Delete the row
-                df.reset_index(drop = True, inplace = True)  # Reset index after deletion
+                transaction.drop(index_transaction_del, inplace = True)  # Delete the row
+                transaction.reset_index(drop = True, inplace = True)  # Reset index after deletion
                 print("\nTransaction deleted successfully!")
 
-                print("\nUpdated Transaction List:\n", df)  # Show updated transactions
+                print("\nUpdated Transaction List:\n", transaction)  # Show updated transactions
 
                 # Ask user if they want to delete another transaction
                 new_del = input("\nWould you like to delete another transaction? (Y/N): ").strip().capitalize()
@@ -323,6 +231,4 @@ def delete_transaction():
         except ValueError:
             print("\nInvalid input. Please try again.")
 
-# Call function
-delete_transaction()
 
