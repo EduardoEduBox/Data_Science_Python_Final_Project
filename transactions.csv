@@ -1,59 +1,15 @@
-Date,Category,Description,Amount,Type,YearMonth
-2024-03-03,Rent,Pay rent,900.0,Expense,
-2024-10-02,Rent,Monthly Rent,1800.0,Expense,2024-10
-2024-10-02,Utilities,Electricity Bill,60.0,Expense,2024-10
-2024-10-03,Food,Dinner,30.0,Expense,2024-10
-2024-10-04,Transport,Bus Ticket,2.75,Expense,2024-10
-2024-10-05,Food,Breakfast,15.0,Expense,2024-10
-2024-10-06,Income,Salary,3000.0,Income,2024-10
-2024-10-13,Transport,Gasoline,50.0,Expense,2024-10
-2024-10-14,Food,Lunch,25.0,Expense,2024-10
-2024-10-15,Entertainment,Concert Ticket,80.0,Expense,2024-10
-2024-11-01,Food,Sauce,50.75,Expense,2024-11
-2024-11-12,Transport,Bus Ticket,140.5,Expense,2024-11
-2024-11-13,Entertainment,Concert Ticket,27.0,Expense,2024-11
-2024-11-14,Shopping,Electronics,28.5,Expense,2024-11
-2024-11-15,Health,Gym Membership,300.0,Expense,2024-11
-2024-11-16,Income,Salary,31.5,Income,2024-11
-2024-11-17,Education,Online Course,33.0,Expense,2024-11
-2024-11-18,Food,Groceries,34.5,Expense,2024-11
-2024-12-05,Education,Online Course,90.0,Expense,2024-12
-2024-12-06,Food,Lunch,61.5,Expense,2024-12
-2024-12-07,Rent,Monthly Rent,63.0,Expense,2024-12
-2024-12-08,Utilities,Internet Bill,64.5,Expense,2024-12
-2024-12-09,Transport,Taxi,66.0,Expense,2024-12
-2024-12-10,Entertainment,Concert Ticket,78.5,Expense,2024-12
-2024-12-11,Shopping,Electronics,69.0,Expense,2024-12
-2024-12-12,Health,Gym Membership,70.5,Expense,2024-12
-2024-12-13,Income,Freelance Work,72.0,Income,2024-12
-2024-12-14,Education,Online Course,73.5,Expense,2024-12
-2024-12-15,Food,Coffee,75.0,Expense,2024-12
-2024-12-16,Rent,Monthly Rent,76.5,Expense,2024-12
-2025-01-13,Utilities,Internet Bill,500.0,Expense,2025-01
-2025-01-14,Transport,Gasoline,120.0,Expense,2025-01
-2025-01-15,Entertainment,Concert Ticket,121.5,Expense,2025-01
-2025-01-16,Shopping,Electronics,123.0,Expense,2025-01
-2025-01-17,Health,Gym Membership,124.5,Expense,2025-01
-2025-01-18,Income,Freelance Work,126.0,Income,2025-01
-2025-01-19,Education,Online Course,127.5,Expense,2025-01
-2025-01-20,Food,Groceries,129.0,Expense,2025-01
-2025-02-02,Utilities,Internet Bill,10.5,Expense,2025-02
-2025-02-03,Transport,Uber Ride,90.0,Expense,2025-02
-2025-02-15,Health,Gym Membership,30.0,Expense,2025-02
-2025-02-16,Income,Salary,2000.0,Income,2025-02
-2025-02-17,Education,Online Course,33.0,Expense,2025-02
-2025-02-18,Food,Groceries,34.5,Expense,2025-02
-2025-02-19,Rent,Monthly Rent,400.0,Expense,2025-02
-2025-02-20,Utilities,Internet Bill,37.5,Expense,2025-02
-2025-02-21,Transport,Taxi,39.0,Expense,2025-02
-2025-02-22,Entertainment,Concert Ticket,40.5,Expense,2025-02
-2025-02-23,Shopping,Electronics,42.0,Expense,2025-02
-2025-02-24,Health,Gym Membership,43.5,Expense,2025-02
-2025-02-25,Income,Freelance Work,45.0,Income,2025-02
-2025-02-26,Education,Online Course,46.5,Expense,2025-02
-2025-02-27,Food,Coffee,48.0,Expense,2025-02
-2025-02-28,Rent,Monthly Rent,49.5,Expense,2025-02
-2025-03-01,Rent,Monthly Rent,9.0,Expense,2025-03
-2025-03-02,Utilities,Internet Bill,10.5,Expense,2025-03
-2025-03-06,Health,Gym Membership,16.5,Expense,2025-03
-2025-03-07,Income,Side Hustle,500.0,Income,2025-03
+Date,Category,Description,Amount,Type
+2024-02-01,Food,Grocery,50.75,Expense
+2024-04-02,Rent,Monthly Rent,1200.0,Expense
+2024-07-02,Utilities,Electricity Bill,60.0,Expense
+2024-08-03,Food,Dinner,30.0,Expense
+2024-11-04,Transport,Bus Ticket,2.75,Expense
+2024-12-05,Food,Breakfast,15.0,Expense
+2024-12-06,Income,Salary,2000.0,Income
+2025-04-10,Income,Freelance Work,500.0,Income
+2025-07-12,Utilities,Water Bill,40.0,Expense
+2025-07-15,Food,Lunch,25.0,Expense
+2025-08-18,Transport,Taxi,25.0,Expense
+2025-09-20,Income,Investment Return,200.0,Income
+2025-09-25,Food,Groceries,80.0,Expense
+2025-10-28,Rent,Monthly Rent,1200.0,Expense
