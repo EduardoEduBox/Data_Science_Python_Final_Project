@@ -97,6 +97,7 @@ def choose_file():
 
         if not required_fields.issubset(df.columns):
             print("\nThe required fields do not match your database.\n")
+
         else:
             print("\nCSV file loaded successfully!")
             run_application(df)
